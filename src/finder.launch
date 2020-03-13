@@ -1,0 +1,39 @@
+<launch>
+    <!--use different name space to run a node simultaneously-->
+    <group ns="red">
+    <node>
+    name="detector"
+    type="detector.py"
+    pkg= "mmdrsot"
+    </node>
+    <rosparam>
+    file="$(find mmdrsot)/parameter/red.yaml"
+    command="load"
+    </rosparam>
+    </group>
+
+    <group ns="blue">
+    <node>
+    name="detector"
+    type="detector.py"
+    pkg= "mmdrsot"
+    </node>
+    <rosparam>
+    file="$(find mmdrsot)/parameter/blue.yaml"
+    command="load"
+    </rosparam>
+    </group>
+
+    <group ns="yellow">
+    <node>
+    name="detector"
+    type="detector.py"
+    pkg= "mmdrsot"
+    </node>
+    <rosparam>
+    file="$(find mmdrsot)/parameter/yellow.yaml"
+    command="load"
+    </rosparam>
+    </group>
+
+</launch>
