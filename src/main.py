@@ -4,10 +4,10 @@ import tf #coordinate transformation
 import time
 import numpy as np
 
-from move_base_msgs import MoveBaseAction, MoveBaseGoal #messages used to communicate with the move_base node
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal #messages used to communicate with the move_base node
 from pip._vendor.distlib.compat import raw_input
 from std_msgs.msg import String #reuse the std_msgs/String msg type (a simple string container) for publishing.
-from geometry_msg import Twist
+from geometry_msgs.msg import Twist
 from math import pi
 
 # ---Global Initialization---
@@ -100,15 +100,15 @@ def commander():
     #!!!!! 0=red, 1=blue, 2=yellow--> STRICTLY FOLLOW THE ORDER IN xyr[]!!!!!
     # or the waypoints of goal will be wrong!
 
-    print("Welcome to Robosot Race Commander Program...")
-    print("--Please make sure Gazebo World is loaded OR TT3 is activated.--")
-
-    #setup ROS node
+    # setup ROS node
     rospy.init_node('commander', anonymous=True)
     # anonymous = True-->ensures that your node has a unique name by adding random numbers to the end of NAME.
     # -->so that multiple listeners can run simultaneously.
     # Unique names are more important for nodes like drivers, where it is an error if more than one is running.
     # If two nodes with the same name are detected on a ROS graph, the older node is shutdown.
+
+    print("Welcome to Robosot Race Commander Program...")
+    print("--Please make sure Gazebo World is loaded OR TT3 is activated.--")
 
     #Publisher
     pub= rospy.Publisher('cmd_vel', Twist, queue_size=1)
