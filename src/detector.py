@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import rospy
 import cv2
 import math
@@ -5,17 +6,17 @@ import numpy
 
 #import the config file and dynamic_reconfigure
 from dynamic_reconfigure.server import Server
-from mmdrsot.configuration import ColorRangeConfig as cfg
+from mmdrsot.cfg import Color2Config
+#from robosot_race.cfg import ColourRangeConfig
 #package_name.folder_name
 
 #important dependencies for using OPen CV with ROS
-from sensor_msgs import Image
-from cv_bridge import CVBridge #link ros and cv image
-
-from std_msgs import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge #link ros and cv image
+from std_msgs.msg import String
 
 #---Initialization----
-H_min, S_min, V_min=0
+H_min, S_min, V_min=0,0,0
 H_max, S_max, V_max=180, 255, 255 #Hue: 0-180
 hough_res=1.2 #hough accumulation resolution
 min_distance=5 #minimum distance between every circle
@@ -64,8 +65,8 @@ def callback(ros_image):
     global hough_res, min_distance, radius_min, radius_max
     global canny_th, hough_th #threshold
 
-    #create CVBridge() object--> communication
-    bridge=CVBridge()
+    #create CvBridge() object--> communication
+    bridge=CvBridge()
 
     #capture one frame--> convert ros image to cv image
     #img=cv2.imread(ros_image) //not using this since the dt type is ros image
@@ -85,17 +86,17 @@ def callback(ros_image):
     #cv2.imshow("MASK",mask)
 
     #merge mask with original cv2 image
-    color=cv2.bitwise_and(img,img,mask=mask) #-->bitwise is a operation to merge 2 img
+    detected_color=cv2.bitwise_and(img,img,mask=mask) #-->bitwise is a operation to merge 2 img
     # parameters: src,output,mask=
-    shape=color.copy() #clone the color display
+    detected_circle=detected_color.copy() #clone the color display
 
     #---Cricle deection---hough transfomr
-    gray=  cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) #grayscale image
+    gray=  cv2.cvtColor(detected_color,cv2.COLOR_BGR2GRAY) #grayscale image
     edges= cv2.Canny(gray, 50,240) #double threshold--> will help you find edges
     #edges is a variable which store EDGES detected
 
     #dilations-> increase detected region
-    kernel= numpy.ones((3,3),numpy.unit8) #3x3 kernel with value 0-255(grayscale)
+    kernel= numpy.ones((3,3),numpy.uint8) #3x3 kernel with value unsingned integer:0-255(grayscale)
     dilation= cv2.dilate(edges,kernel=kernel,iterations=1)
     #erosion=cv2.erode(dilation,kernel=kernel,iterations=1)
 
@@ -112,39 +113,38 @@ def callback(ros_image):
 
     #check whether is any circle detected:
     if circles is not None: #at least one ball found
-        rospy.loginfo(rospy.get_caller_id()+ " Ball(s) found.")
+        rospy.loginfo(rospy.get_caller_id() + " Ball(s) found.")
         #convert the (x, y) coordinates and radius of the circles to integers
         circles= numpy.round(circles[0, :]).astype("int")
-        circles_sorted= sorted(circles, key=lambda x:x[2])
+        circles_sorted= sorted(circles, key=lambda x: x[2])
         #search for the largest radius in circles[]
 
         #---for display used only---
         for (x,y,r) in circles:  #loop over the (x, y) coordinates and radius of the circles
-            cv2.circle(shape,(x,y),r,(0, 255, 0),4) #green color with 4px(thickness)
-            cv2.rectangle(shape,(x-2,y-2),(x+2,y+2),(0, 128, 255),-1)
+            cv2.circle(detected_circle,(x,y),r,(0, 255, 0),4) #green color with 4px(thickness)
+            cv2.rectangle(detected_circle,(x-2,y-2),(x+2,y+2),(0, 128, 255),-1)
             # draw the actual detected circle on Line 118 using the cv2.circle function,
             # followed by drawing a rectangle at the center of the circle on Line 29.
 
-        else:
-            rospy.loginfo(rospy.get_caller_id+ "No ball found")
-            circles_sorted=[[-1,-1,-1]]
+    else:
+         rospy.loginfo(rospy.get_caller_id()+ "Sorry!No ball found.")
+         circles_sorted=[[0,0,0]]
 
-    #convert processed cv image--> ros image
-    shape_conversion=bridge.imgmsg_to_cv2(shape,"bgr8")
-    color_conversion=bridge.imgmsg_to_cv2(color,"bgr8")
+    #convert processed cv image--> ros image    
+    color_conversion=bridge.cv2_to_imgmsg(detected_color,"bgr8")
+    shape_conversion=bridge.cv2_to_imgmsg(detected_circle,"bgr8")
 
     output_circle.publish(shape_conversion)
     output_color.publish(color_conversion)
 
-    cx=1.0 * circles_sorted([-1][0]) / img.shape([1]) #x=row
-    cy=1.0 * circles_sorted([-1][1]) / img.shape([0]) #y=column
+    circle_x=1.0*circles_sorted[-1][0]/img.shape[1] #x=row
+    circle_y=1.0*circles_sorted[-1][1]/img.shape[0] #y=column
     # each image is represented as a NumPy array with shape (h, w, 3),
     # where h is col, w is row, "3" is the number of channels
 
-    CX= 0.5-cx
-    CY= 0.5-cy
-    CR= 1.0 * circles_sorted([-1][2]) / img.shape([1])
-
+    CX= 0.5-circle_x
+    CY= 0.5-circle_y
+    CR= 1.0*circles_sorted[-1][2]/ img.shape[1]
     ball_xyr.publish(str(CX)+","+str(CY)+","+str(CR))
     #remember to insert comma---> used for data separation in callback function
 
@@ -158,14 +158,15 @@ def listener():
     #--Declaration--
     global ball_xyr, output_circle, output_color
 
-    rospy.init("detector", anonymous=True)
+    rospy.init_node('ball_detector', anonymous=True)
     rospy.Subscriber("/camera/image", Image, callback)
-    ball_xyr=rospy.Publisher("ball_xyr", String, queue_size=1) #xyr
-    output_color= rospy.Publisher("output_color",Image, queue_size=1)
-    output_circle= rospy.Publisher("output_circle", Image, queue_size=1)
+    ball_xyr=rospy.Publisher('ball_xyr', String, queue_size=1) #xyr
+    output_color= rospy.Publisher('output_color',Image, queue_size=1)
+    output_circle= rospy.Publisher('output_circle', Image, queue_size=1)
 
     # Dynamic reconfigure server
-    srv1 = Server(cfg,color_callback)
+    #srv = Server(ColourRangeConfig,color_callback)
+    srv = Server(Color2Config,color_callback)
     # Just spin and wait
     rospy.spin()
 
@@ -178,9 +179,3 @@ if __name__ == '__main__': #main(
     #     pass
 
     listener() #---> needed to be execute forever until end program!!!!
-
-
-
-
-
-
