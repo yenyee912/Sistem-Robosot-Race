@@ -4,7 +4,7 @@ Simple ball detecting program to be used on ROS Turtlebot3 for Robosot Race FIRA
 IMPORTANT!!! If you are a begineer, please follow the following steps to save your debugging time.
 Preparation:
 
-1. Make sure that you have installed ROS Kinetic Kame before running this program on your Ubuntu 16.04 OS.
+1. Make sure that you have installed ROS Kinetic Kame before running this program on your Ubuntu 16.04 OS. Please go through some basic linux operation tutorial before. It may be very helpful.
 
 2. Kindly do your own mapping. In my case I am using gmapping.
 http://emanual.robotis.com/docs/en/platform/turtlebot3/slam/#run-slam-nodes
@@ -40,4 +40,5 @@ This a executable which control the flow of robot. Kindly refer the documentatio
 
 **'mmdrsot' is my ROS package name. You may change to yours!!
 ** If you have problem in dynamic configuration (e.g no module named xxx.cfg), you may comment out the code. Core functions still work fine.
+** If you find out any script is not working, it can be the executable permission issue. Just 'cd' to the location of script and use command: $ chmod a+x <script> name.
 ** just contact me if you still struggled with any problem. It can be my bugs. You can reach out to be from the package.xml
