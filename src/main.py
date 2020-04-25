@@ -1,11 +1,12 @@
+#!/usr/bin/env python
 import rospy #import rospy if you are writing a ROS Node.
 import actionlib
 import tf #coordinate transformation
 import time
 import numpy as np
 
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal #messages used to communicate with the move_base node
-from pip._vendor.distlib.compat import raw_input
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal 
+#messages used to communicate with the move_base node
 from std_msgs.msg import String #reuse the std_msgs/String msg type (a simple string container) for publishing.
 from geometry_msgs.msg import Twist
 from math import pi
@@ -28,6 +29,7 @@ max_linear=0.15
 offset_y_gnd=-0.45 #determine how near robot will stop
 slow_approach_count=0
 lost_ball_count=0
+reverse_count=0
 
 # list of goals--> x,y coordinates generated from topic 'publish_point'
 waypoints=[ #red, blue, yellow goals
@@ -43,13 +45,13 @@ def red_callback(data):
     global red_xyr
     # ball_xyr.publish(str(cx)+","+str(cy)+","+str(cr))
     red_xyr_str= data.data.split(',')
-    print (red_xyr[0], red_xyr[1], red_xyr[2])
+    # print (red_xyr[0], red_xyr[1], red_xyr[2])
     #convert string to float
     red_xyr[0]=float(red_xyr_str[0]) # x-coordinate
     red_xyr[1]=float(red_xyr_str[1]) # y-coordinate
     red_xyr[2]=float(red_xyr_str[2]) # radius
-    print (red_xyr[0], red_xyr[1], red_xyr[2])
-    print (red_xyr_str[0], red_xyr_str[1], red_xyr_str[2])
+    # print (red_xyr[0], red_xyr[1], red_xyr[2])
+    # print (red_xyr_str[0], red_xyr_str[1], red_xyr_str[2])
 
 def blue_callback(data):
     global blue_xyr
@@ -86,29 +88,23 @@ def goalpose_conversion(pose): #use when robot need to move to goal
     return gp
     #so "goal" object contained coordinate(converted)that can be send to move_base
     #-->state 4
+
 # ---Commander Function---
 def commander():
+    print("Dear user: WELCOME to Robosot Race Commander Program.")
+    print("--Please make sure Gazebo World is loaded OR TT3 is activated.--")
     # ---Declaration---
     global kp_angular, kp_linear, max_angular, max_linear, offset_y_gnd
     global red_xyr, yellow_xyr, blue_xyr
     global slow_approach_count #how long the state berterusan
     global lost_ball_count
     global reverse_count
-    #state=0 #turn around-->scan diff. region
-    state=1 #choose the nearest ball (within all balls detected)
-    ball_color=-1
-    #!!!!! 0=red, 1=blue, 2=yellow--> STRICTLY FOLLOW THE ORDER IN xyr[]!!!!!
-    # or the waypoints of goal will be wrong!
-
-    # setup ROS node
+    #setup ROS node
     rospy.init_node('commander', anonymous=True)
     # anonymous = True-->ensures that your node has a unique name by adding random numbers to the end of NAME.
     # -->so that multiple listeners can run simultaneously.
     # Unique names are more important for nodes like drivers, where it is an error if more than one is running.
     # If two nodes with the same name are detected on a ROS graph, the older node is shutdown.
-
-    print("Welcome to Robosot Race Commander Program...")
-    print("--Please make sure Gazebo World is loaded OR TT3 is activated.--")
 
     #Publisher
     pub= rospy.Publisher('cmd_vel', Twist, queue_size=1)
@@ -118,28 +114,33 @@ def commander():
     # The queue_size ARGUMENT limits the amount of queued messages if any subscriber is not receiving them fast enough.
 
     #Subscriber --> all ball finders
-    rospy.Subscriber('red/ball_xyr', String, red_callback) #no need to create sub obj--> not using it
     # use "topic name"!!!
     # This declares that your node subscribes to the "red/ball_xyr" topic which is of type std_msgs.msgs.String.
     # When new messages are received, 'red_callback' callback is invoked with the message as the first argument.
-    rospy.Subscriber('blue/ball_xyr', String, blue_callback)
-    rospy.Subscriber('yellow/ball_xyr', String, yellow_callback)
-
-    rospy.spin()
+    rospy.Subscriber("red/ball_xyr", String, red_callback) #no need to create sub obj--> not using it
+    rospy.Subscriber("blue/ball_xyr", String, blue_callback)
+    rospy.Subscriber("yellow/ball_xyr", String, yellow_callback)
+    #rospy.spin()
     # spin() simply keeps python from exiting until this node is stopped
-
-    #create action client--> send action command to action server (using MoveBaseAction)
+ 
     print("Connecting to move_base server...")
     print("Please make sure the navigation node is active or the map.yaml file is loaded.")
+    #create action client--> send action command to action server (using MoveBaseAction)
     client=actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
+
     print("Lets go! Robosot Race Commander Program is READY!")
     print("-------------------------------")
     raw_input("PRESS ENTER TO START THE GAME.")
+    #state=0 #turn around-->scan diff. region
+    state=1 #choose the nearest ball (within all balls detected)
+    ball_color=-1
+    #!!!!! 0=red, 1=blue, 2=yellow--> STRICTLY FOLLOW THE ORDER IN xyr[]!!!!!
+    # or the waypoints of goal will be wrong!
     rate=rospy.Rate(10) #communicate at 10Hz
-
     #create geometry_msgs object, 'vel'--> send cmd_vel(Twist msg type) to TT3
     vel=Twist()
+
     while not rospy.is_shutdown():
         #state transition--> 0,1,2,3,4,5,6,-1
         if state==0: #turn around
