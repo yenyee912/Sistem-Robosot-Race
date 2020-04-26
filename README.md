@@ -1,27 +1,26 @@
 # Sistem-Robosot-Race
 Simple ball detecting program to be used on ROS Turtlebot3 for Robosot Race FIRA
 
-IMPORTANT!!! If you are a begineer, please follow the following steps to save your debugging time.
-Preparation:
-
+IMPORTANT!!! If you are a begineer, please follow the following steps to save your time.<br />
+Preparation:<br />
+<br />
 1. Make sure that you have installed ROS Kinetic Kame before running this program on your Ubuntu 16.04 OS. Please go through some basic linux operation tutorial before. It may be very helpful.
-
-2. Kindly do your own mapping. In my case I am using gmapping.
-http://emanual.robotis.com/docs/en/platform/turtlebot3/slam/#run-slam-nodes
-Save your generated map in somewhere. 'Home' path is recomended.
+<br />
+2. Kindly do your own mapping. In my case I am using gmapping.<br />
+http://emanual.robotis.com/docs/en/platform/turtlebot3/slam/#run-slam-nodes <br />
+Save your generated map in somewhere. 'Home' path is recomended.<br />
 **get the coordinate of goal:
 In a new terminal, run:
 $ rostopic echo /clicked_point
 In RViz, click on 'Publish Point'(toolbar on top of the map), then click at a point approx. 20cm in front of the goal opening.
-
-
+<br />
 3. Create a playing field in gazebo simulation/ in reality. You may use this:
 https://github.com/arixrobotics/robosot_race_gazebo
 - if you use this, noticed that the package name is: robosot_race_gazebo
-
-4. Clone this repository to your catkin workspace (catkin_ws). Unzip and rename it as 'mmdrsot'. You may also create your onw ROS package and move the content into it. Just dont forget to change the package name in commands late. 
+<br />
+4. Clone this repository to your catkin workspace (catkin_ws). Unzip and rename it as 'mmdrsot'. You may also create your onw ROS package and move the content into it. Just dont forget to change the package name in commands late. <br />
 **Remember to 'catkin_make'.
-
+<br />
 To use:
 1. Bring up
 (a) Launch the Gazebo test field: $ roslaunch robosot_race_gazebo robosot_gazebo.launch 
