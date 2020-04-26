@@ -1,5 +1,5 @@
 # Sistem-Robosot-Race
-Simple ball detecting program to be used on ROS Turtlebot3 for Robosot Race FIRA
+Simple ball detecting program to be used on ROS Turtlebot3 in Robosot Race FIRA
 
 IMPORTANT!!! If you are a begineer, please follow the following steps to save your time.<br />
 Preparation:<br />
