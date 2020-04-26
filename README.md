@@ -25,7 +25,7 @@ To use:<br />
 2. Activate TT3 navigation node: <br /> 
 $ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml <br />
  - I have set my robot model to burger. You may refer http://emanual.robotis.com/docs/en/platform/turtlebot3/navigation/#run-navigation-nodes for your own model.
- - map_file <PATH of your map><br />  
+ - map_file < PATH of your map > <br />  
 
 3. Launch ball finder: $ roslaunch mmdrsot finder.launch <br />
 This is a launch file which to run multiple 'detetcor.py' node at one time. Depends on how many types of color you have. You may adjust your own color ball parameter and save it as a .yaml file in folder 'parameter'. Remember to include your parameter in the **finder.launch** too. <br />
