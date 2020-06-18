@@ -32,9 +32,10 @@ $ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/m
 This is a launch file which to run multiple 'src/detetcor.py' node at one time. Depends on how many types of color you have. You may adjust your own color ball parameter and save it as a .yaml file in folder 'parameter'. Remember to include your parameter in the **finder.launch** too. <br />
 
 4. Launch the commander: $ rosrun robosot_race main.py <br />
-This a executable which control the flow of robot. Kindly refer the documentation in this script. <br />
+This a executable which control the flow of robot.
 
 - 'robosot_race' is my ROS package name. You may change to yours.<br />
 - If you find out any script is not working, it can be the executable permission issue. Just go to the location of script and use command: $ chmod a+x <script_name>.
 - Just email me if you experienced any problem. You can reach out to me from the "package.xml" file.
-- May customize your desired color ball, change the parameter file in "parameter" folder. The value of parameters can be found by dynamic reconfigure. http://wiki.ros.org/dynamic_reconfigure
+- May customize your desired color ball, change the parameter file in "parameter" folder. The value of parameters can be found by dynamic reconfigure. http://wiki.ros.org/dynamic_reconfigure <br />
+- The color ball parameters found can be save as a .yaml file. Remember to include your parameter in the **finder.launch** too. <br />
