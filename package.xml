@@ -2,7 +2,7 @@
 <package format="2">
   <name>robosot_race</name>
   <version>0.0.0</version>
-  <description>The robosot_race ball detecting program.</description>
+  <description>The FIRA Robosot Race ball detecting program.</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
