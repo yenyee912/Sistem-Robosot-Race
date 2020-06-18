@@ -1,5 +1,6 @@
 # Sistem-Robosot-Race
 Simple ball detecting program to be used on ROS Turtlebot3 in Robosot Race FIRA. The robot can detect 3 types of coloured ball: red, blue, yellow. Robot will approach the balls and take them to corresponding goal. Turtlebot3 will do path planning itself so no manually control is needed.  
+Example of program demostration: https://youtu.be/q1ffZCIumT0
 
 If you are a begineer, please follow the following steps to save your time.<br />
 Preparation:<br />
@@ -11,10 +12,10 @@ Save your generated map. '$HOME' path is most recomended.<br />
   - In a new terminal, run:<br />
 $ rostopic echo /clicked_point <br />
   - In RViz, click on 'Publish Point'(toolbar on top of the map), then click at a point approx. 20cm in front of the goal opening. You may see the x,y,z of the point you clicked. Record the x,y coordinates only.
-  - Insert the recorded coordinates into main.py
+  - **Insert the recorded coordinates into src/main.py (line 30).**
 3. Create a playing field in gazebo simulation/ in reality. You may use this:<br />
-https://github.com/
-4. Clone this repository to your catkin workspace (catkin_ws). Unzip and rename it as 'robosot_race'. You may also create your onw ROS package and move the content into it. Just dont forget to change the package name in commands late.
+https://github.com/yenyee912/Robosot-Race-Gazebo4. 
+Clone and unzip this repository to your catkin workspace (catkin_ws). You may choose to create your onw ROS package and copy the contents into it your new made file. Just dont forget to change the package name in commands later.
 **Remember to 'catkin_make'.** <br />
 
 To launch the Robosot Race Robotics System:<br />
@@ -28,12 +29,12 @@ $ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/m
  - map_file:= < PATH to your map > <br />  
 
 3. Launch ball finder: $ roslaunch robosot_race finder.launch <br />
-This is a launch file which to run multiple 'detetcor.py' node at one time. Depends on how many types of color you have. You may adjust your own color ball parameter and save it as a .yaml file in folder 'parameter'. Remember to include your parameter in the **finder.launch** too. <br />
+This is a launch file which to run multiple 'src/detetcor.py' node at one time. Depends on how many types of color you have. You may adjust your own color ball parameter and save it as a .yaml file in folder 'parameter'. Remember to include your parameter in the **finder.launch** too. <br />
 
 4. Launch the commander: $ rosrun robosot_race main.py <br />
 This a executable which control the flow of robot. Kindly refer the documentation in this script. <br />
 
 - 'robosot_race' is my ROS package name. You may change to yours.<br />
-- If you have problem in dynamic configuration (e.g no module named xxx.cfg), you may comment out the code. Core functions still work fine.
 - If you find out any script is not working, it can be the executable permission issue. Just go to the location of script and use command: $ chmod a+x <script_name>.
-- Just email me if you experience any problem. It can be my bugs. You can reach out to me from the "package.xml" file.
+- Just email me if you experienced any problem. You can reach out to me from the "package.xml" file.
+- May customize your desired color ball, change the parameter file in "parameter" folder. The value of parameters can be found by dynamic reconfigure. http://wiki.ros.org/dynamic_reconfigure
