@@ -2,7 +2,7 @@
 Simple ball detecting program to be used on ROS Turtlebot3 in Robosot Race FIRA. The robot can detect 3 types of coloured ball: red, blue, yellow. Robot will approach the balls and take them to corresponding goal. Turtlebot3 will do path planning itself so no manually control is needed.  
 Example of program demostration: https://youtu.be/q1ffZCIumT0
 
-If you are a begineer, please follow the following steps to save your time.<br />
+If you are a begineer, please kindly refer the following steps to save your time.<br />
 Preparation:<br />
 1. Make sure that you have installed ROS Kinetic Kame before running this program on your Ubuntu 16.04 OS. Please at least go through some basic linux operation tutorial. It may be very helpful.
 2. Choose your own mapping algorithm, in my case I am using gmapping.<br /> Tutorial as follow:
