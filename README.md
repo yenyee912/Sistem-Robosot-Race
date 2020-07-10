@@ -5,9 +5,9 @@ Example of program demostration: https://youtu.be/q1ffZCIumT0
 If you are a begineer, please kindly refer the following steps to save your time.<br />
 Preparation:<br />
 1. Make sure that you have installed ROS Kinetic Kame before running this program on your Ubuntu 16.04 OS. Please at least go through some basic linux operation tutorial. It may be very helpful.
-2. Choose your own mapping algorithm, in my case I am using gmapping.<br /> Tutorial as follow:
+2. Choose your own mapping algorithm, in my case I am using gmapping. <br /> Tutorial as follow:
 http://emanual.robotis.com/docs/en/platform/turtlebot3/slam/#run-slam-nodes <br />
-Save your generated map. '$HOME' path is most recomended.<br />
+Save your generated map. '$HOME' path is most recomended. I have prepare a ready map (map.pgm/.yaml) that you may give it a try. Just copy the map files and save them to $HOME.<br />
 - To the coordinate of goal:<br />
   - In a new terminal, run:<br />
 $ rostopic echo /clicked_point <br />
