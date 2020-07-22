@@ -14,7 +14,7 @@ $ rostopic echo /clicked_point <br />
   - In RViz, click on 'Publish Point'(toolbar on top of the map), then click at a point approx. 20cm in front of the goal opening. You may see the x,y,z of the point you clicked. Record the x,y coordinates only.
   - **Insert the recorded coordinates into src/main.py (line 30).**
 3. Create a playing field in gazebo simulation/ in reality. You may use this:<br />
-https://github.com/yenyee912/Robosot-Race-Gazebo4. 
+https://github.com/yenyee912/Robosot-Race-Gazebo. 
 Clone and unzip this repository to your catkin workspace (catkin_ws). You may choose to create your onw ROS package and copy the contents into it your new made file. Just dont forget to change the package name in commands later.
 **Remember to 'catkin_make'.** <br />
 
